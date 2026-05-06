@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+---
+
+<BaseLayout
+  title="About — Coral Reaper"
+  description="Coral Reaper is a small, US-based aquaculture operation focused on hand-selected frags, honest photography, and overnight shipping."
+>
+  <section class="section">
+    <div class="container narrow">
+      <p class="eyebrow">About</p>
+      <h1>Small operation. Tight catalog. No filler.</h1>
+
+      <div class="prose">
+        <p>
+          Coral Reaper is a small, US-based aquaculture project. We grow, frag,
+          and ship corals we'd be proud to keep in our own systems — nothing
+          more, nothing less.
+        </p>
+
+        <h2>What we believe</h2>
+        <p>
+          Aquacultured corals are stronger, hardier, and easier to settle into
+          a new system than wild collected pieces. They've already adapted to
+          captive water, captive lighting, and captive flow. We focus on
+          tank-raised stock for that reason — it's better for hobbyists and
+          better for reefs.
+        </p>
+
+        <h2>How we ship</h2>
+        <p>
+          What you see is what ships. Every frag is photographed under
+          actinic-only lighting on a black background — no edited stock photos,
+          no bait-and-switch substitutions. Frags ship overnight with a heat
+          or cold pack as the route requires, and a live arrival guarantee.
+          Cut corners on packaging is how corals die in transit; we don't.
+        </p>
+
+        <h2>Why "Reaper"</h2>
+        <p>
+          The name's a wink. The corals you'll find here are the survivors —
+          tank-raised, dialed-in, and ready to spread. The reaper is the one
+          who picks the keepers.
+        </p>
+
+        <h2>Where we are in the launch</h2>
+        <p>
+          The list is open now. Storefront and first drop are coming soon.
+          Wholesale and partnership inquiries are welcome — see the
+          <a href="/contact">contact page</a>.
+        </p>
+      </div>
+
+      <div class="signup-spacer">
+        <EmailSignup />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+
+  .prose {
+    margin-top: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .prose h2 {
+    margin-top: var(--space-4);
+    color: var(--color-bone);
+  }
+
+  .prose p {
+    color: var(--color-bone-dim);
+    font-size: 1.05rem;
+    max-width: 65ch;
+  }
+
+  .signup-spacer {
+    margin-top: var(--space-16);
+  }
+</style>

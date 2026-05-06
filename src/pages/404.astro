@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Coral Reaper"
+  description="That page got fragged."
+>
+  <section class="section notfound">
+    <div class="container">
+      <img src="/logo.png" alt="" width="120" height="120" class="logo" />
+      <p class="eyebrow">404</p>
+      <h1>That page got fragged.</h1>
+      <p class="lede">Whatever you were looking for isn't here. Or never was.</p>
+      <a href="/" class="btn">Back to home</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    text-align: center;
+    padding: var(--space-24) 0;
+  }
+
+  .logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto var(--space-6);
+    border: 1px solid var(--color-border);
+    opacity: 0.85;
+  }
+
+  h1 {
+    margin-bottom: var(--space-4);
+  }
+
+  .lede {
+    color: var(--color-bone-dim);
+    margin: 0 auto var(--space-8);
+    max-width: 50ch;
+  }
+</style>
