@@ -2,11 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FACEBOOK_URL } from '../data/etsy';
 
-// Replace with a real Formspree form ID before going live (see README).
-// Until activated, the form will visibly fail; the Facebook + email links
-// below provide a working fallback.
-const FORMSPREE_ID = 'YOUR_FORM_ID';
-const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
+// Web3Forms access key. Public by design — embedded in the rendered HTML
+// for a static client-side POST. Spam protection is via the honeypot
+// (botcheck) below + Web3Forms' own server-side filtering.
+const WEB3FORMS_ACCESS_KEY = '2010ecc3-3460-4d5e-8650-cfa9eda91980';
+
 const CONTACT_EMAIL = 'contact@coralreaper.com';
 
 // Honor ?topic=frag&frag=NAME query so a frag detail page can pre-fill.
@@ -44,7 +44,28 @@ const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window:
         </div>
       </div>
 
-      <form class="form" id="contact-form" action={formAction} method="post">
+      <form
+        class="form"
+        id="contact-form"
+        action="https://api.web3forms.com/submit"
+        method="post"
+      >
+        <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+        <input type="hidden" name="from_name" value="Coral Reaper site" />
+        <input
+          type="hidden"
+          name="subject"
+          value="Coral Reaper — new contact form submission"
+        />
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="hp"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+
         <div class="row">
           <label>
             <span>Name</span>
@@ -79,16 +100,92 @@ const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window:
         </label>
 
         <button type="submit" class="btn">Send</button>
+
+        <div class="form-status" role="status" aria-live="polite"></div>
       </form>
 
       <p class="form-note">
-        Form not working? It's on the dev list to wire up next. In the
-        meantime <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">message us on Facebook ↗</a>
+        Prefer not to use a form? <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Message us on Facebook ↗</a>
         or <a href={`mailto:${CONTACT_EMAIL}`}>email {CONTACT_EMAIL}</a>.
       </p>
     </div>
   </section>
 </BaseLayout>
+
+<script is:inline define:vars={{ FACEBOOK_URL, CONTACT_EMAIL }}>
+  const form = document.getElementById('contact-form');
+  if (form) {
+    const status = form.querySelector('.form-status');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const subjectInput = form.querySelector('input[name="subject"]');
+    const topicSelect = form.querySelector('select[name="topic"]');
+
+    const topicLabel = (val) => {
+      switch (val) {
+        case 'frag': return 'Frag inquiry';
+        case 'wholesale': return 'Wholesale';
+        case 'custom-print': return 'Custom 3D-print request';
+        case 'partnership': return 'Partnership / sponsorship';
+        case 'press': return 'Press / media';
+        default: return 'General';
+      }
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.className = 'form-status loading';
+      status.textContent = '';
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending…';
+
+      // Build a useful subject line from the selected topic + name.
+      const fd = new FormData(form);
+      const name = (fd.get('name') || '').toString().trim();
+      const topic = topicLabel((fd.get('topic') || 'other').toString());
+      subjectInput.value = `Coral Reaper — ${topic}${name ? ` from ${name}` : ''}`;
+      fd.set('subject', subjectInput.value);
+
+      // Convert FormData to JSON for Web3Forms.
+      const payload = {};
+      fd.forEach((v, k) => { payload[k] = v; });
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          // Replace the form with a thanks card.
+          const thanks = document.createElement('div');
+          thanks.className = 'thanks-card';
+          thanks.innerHTML = `
+            <h3>Got it. We'll be in touch.</h3>
+            <p>Reply usually within a couple of days. If it's urgent, message us on
+            <a href="${FACEBOOK_URL}" target="_blank" rel="noopener noreferrer">Facebook</a>
+            or email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+          `;
+          form.replaceWith(thanks);
+        } else {
+          throw new Error(data.message || `HTTP ${res.status}`);
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        status.className = 'form-status error';
+        status.innerHTML =
+          `Something went wrong sending the form (${(err && err.message) || 'network error'}). ` +
+          `<a href="${FACEBOOK_URL}" target="_blank" rel="noopener noreferrer">Message on Facebook</a> ` +
+          `or <a href="mailto:${CONTACT_EMAIL}">email ${CONTACT_EMAIL}</a> instead.`;
+      }
+    });
+  }
+</script>
 
 <style>
   .narrow { max-width: 720px; }
@@ -139,6 +236,15 @@ const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window:
     gap: var(--space-6);
   }
 
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .row {
     display: grid;
     gap: var(--space-6);
@@ -160,7 +266,8 @@ const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window:
     color: var(--color-bone-dim);
   }
 
-  input,
+  input[type='text'],
+  input[type='email'],
   select,
   textarea {
     background: var(--color-bg-surface);
@@ -194,6 +301,61 @@ const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window:
   }
 
   button { align-self: flex-start; }
+
+  .form-status {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding: 0;
+    color: var(--color-bone-dim);
+    transition: color 0.15s ease;
+  }
+
+  .form-status.loading::before {
+    content: 'Sending…';
+    color: var(--color-bone-dim);
+  }
+
+  .form-status.error {
+    color: var(--color-coral);
+    background: rgba(255, 59, 108, 0.08);
+    border: 1px solid rgba(255, 59, 108, 0.3);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .form-status.error a {
+    color: var(--color-coral);
+    text-decoration: underline;
+  }
+
+  .thanks-card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-yellow);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .thanks-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    color: var(--color-bone);
+    margin: 0;
+  }
+
+  .thanks-card p {
+    color: var(--color-bone-dim);
+    margin: 0;
+  }
+
+  .thanks-card a {
+    color: var(--color-coral);
+    font-weight: 600;
+  }
 
   .form-note {
     margin-top: var(--space-8);
