@@ -1,0 +1,107 @@
+---
+import type { EtsyReview } from '../data/etsy';
+
+interface Props {
+  reviews: EtsyReview[];
+  heading?: string;
+  description?: string;
+}
+
+const {
+  reviews,
+  heading = 'What gear buyers are saying',
+  description = '5 stars from every Etsy buyer so far.',
+} = Astro.props;
+
+const dateFmt = (iso: string) => {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+};
+---
+
+<section class="section reviews">
+  <div class="container">
+    <p class="eyebrow">Reviews</p>
+    <h2>{heading}</h2>
+    <p class="lede">{description}</p>
+    <div class="grid">
+      {reviews.map((r) => (
+        <article class="card">
+          <div class="stars" aria-label={`${r.stars} out of 5 stars`}>
+            {Array.from({ length: r.stars }).map(() => <span>★</span>)}
+          </div>
+          <p class="text">"{r.text}"</p>
+          <div class="meta">
+            <span class="who">{r.reviewer}</span>
+            <span class="dot">·</span>
+            <span class="when">{dateFmt(r.date)}</span>
+          </div>
+          <p class="for">on <em>{r.product}</em></p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .lede {
+    color: var(--color-bone-dim);
+    margin-bottom: var(--space-12);
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .card {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-yellow);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .stars {
+    display: flex;
+    gap: 2px;
+    color: var(--color-yellow);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .text {
+    color: var(--color-bone);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-bone-dim);
+    font-size: 0.85rem;
+    margin-top: auto;
+  }
+
+  .who { font-weight: 600; color: var(--color-bone); }
+  .dot { color: var(--color-bone-faint); }
+
+  .for {
+    color: var(--color-bone-faint);
+    font-size: 0.78rem;
+    margin: 0;
+  }
+
+  .for em { color: var(--color-bone-dim); font-style: normal; }
+</style>

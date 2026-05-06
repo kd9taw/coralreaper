@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const lastUpdated = '2026-05-05';
+const dateFmt = new Date(lastUpdated).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title="Privacy Policy — Coral Reaper"
+  description="How Coral Reaper handles your information. Short answer: we collect almost nothing."
+>
+  <section class="section privacy">
+    <div class="container narrow">
+      <p class="eyebrow">Privacy</p>
+      <h1>Privacy policy</h1>
+      <p class="updated">Last updated: {dateFmt}</p>
+
+      <div class="prose">
+        <p>
+          Coral Reaper is a small, US-based reef-keeping operation. This page
+          explains what information we collect through this website and what
+          happens to it. The short version: <strong>we collect almost nothing.</strong>
+        </p>
+
+        <h2>Who we are</h2>
+        <p>
+          Coral Reaper sells aquacultured coral frags (local pickup) and custom
+          3D-printed reef accessories (via our Etsy shop). The website you're
+          reading is a static brand site hosted on Cloudflare Pages.
+        </p>
+
+        <h2>What we collect on this site</h2>
+        <p>
+          <strong>Today: nothing directly.</strong> The site has no active sign-up
+          form, no cookies that we set, no tracking scripts beyond optional
+          privacy-respecting Cloudflare Web Analytics (which doesn't use cookies
+          and doesn't identify individuals).
+        </p>
+        <p>
+          The contact form, when it is activated in a future update, will send
+          submissions through Formspree. At that point we'll receive your name,
+          email, and message — used only to reply to your inquiry.
+        </p>
+        <p>
+          When email signup is activated in a future update, we'll use Buttondown
+          (or a similar provider) and we'll list it here. You'll always be able
+          to unsubscribe with one click.
+        </p>
+
+        <h2>Third parties</h2>
+        <ul>
+          <li>
+            <strong>Cloudflare</strong> — hosts the site and may log standard
+            request data (IP, user agent, referrer) for security and basic
+            analytics. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare's privacy policy</a>.
+          </li>
+          <li>
+            <strong>Etsy</strong> — when you click out to our Etsy shop, you're
+            on Etsy's site under their privacy terms.
+            <a href="https://www.etsy.com/legal/privacy" target="_blank" rel="noopener">Etsy's privacy policy</a>.
+          </li>
+          <li>
+            <strong>Facebook / Meta</strong> — when you click out to our Facebook
+            page, you're on Meta's platform under their privacy terms.
+            <a href="https://www.facebook.com/policy.php" target="_blank" rel="noopener">Meta's privacy policy</a>.
+          </li>
+        </ul>
+
+        <h2>Cookies</h2>
+        <p>
+          This site sets no first-party cookies. Cloudflare may set a security
+          challenge cookie if it suspects a bot. No advertising cookies, ever.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+          If we ever do hold information about you (e.g., a contact-form
+          submission you've sent), you can ask us to see it, correct it, or
+          delete it by emailing
+          <a href="mailto:contact@coralreaper.com">contact@coralreaper.com</a>.
+          We'll respond within a reasonable time.
+        </p>
+
+        <h2>Changes to this policy</h2>
+        <p>
+          When this policy materially changes, we'll update the "Last updated"
+          date at the top and (if the changes affect existing subscribers)
+          notify the email list.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions about privacy or anything else:
+          <a href="mailto:contact@coralreaper.com">contact@coralreaper.com</a>,
+          or use the <a href="/contact">contact form</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .narrow { max-width: 760px; }
+
+  .updated {
+    color: var(--color-bone-faint);
+    font-size: 0.85rem;
+    margin: var(--space-2) 0 var(--space-12);
+  }
+
+  .prose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .prose h2 {
+    margin-top: var(--space-6);
+    color: var(--color-bone);
+    font-size: 1.5rem;
+  }
+
+  .prose p,
+  .prose ul {
+    color: var(--color-bone-dim);
+    font-size: 1rem;
+  }
+
+  .prose ul {
+    list-style: disc;
+    padding-left: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .prose strong { color: var(--color-bone); }
+</style>

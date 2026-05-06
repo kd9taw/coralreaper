@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FragCard from '../components/FragCard.astro';
+import { frags, fragTypeLabels, type FragType } from '../data/frags';
+
+// Filter chips: only types we actually have inventory of
+const presentTypes = Array.from(new Set(frags.map((f) => f.type))) as FragType[];
+const sortedTypes: FragType[] = ['zoa', 'lps', 'sps', 'soft', 'mushroom', 'other'].filter((t) =>
+  presentTypes.includes(t as FragType)
+) as FragType[];
+
+const availableCount = frags.filter((f) => f.status === 'available').length;
+---
+
+<BaseLayout
+  title="Frags — Coral Reaper"
+  description="Aquacultured coral frags. Local pickup only for now. Inquire to coordinate."
+>
+  <section class="section frags">
+    <div class="container">
+      <p class="eyebrow">Frags</p>
+      <h1>The current grow-out.</h1>
+      <p class="lede">
+        Hand-grown, photographed in our own 3D-printed frag racks.
+        {availableCount} pieces available right now.
+      </p>
+
+      <div class="callout">
+        <strong>Local pickup only.</strong>
+        We're not set up to ship live coral overnight yet — that's coming.
+        For now, find a frag you like, message us, and we'll coordinate a pickup.
+      </div>
+
+      {sortedTypes.length > 1 && (
+        <div class="filters" role="tablist" aria-label="Filter by type">
+          <button class="chip active" data-filter="all" type="button">All ({frags.length})</button>
+          {sortedTypes.map((t) => {
+            const n = frags.filter((f) => f.type === t).length;
+            return (
+              <button class="chip" data-filter={t} type="button">
+                {fragTypeLabels[t]} ({n})
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <div class="grid" id="frag-grid">
+        {frags.map((f) => (
+          <div class="grid-item" data-type={f.type}>
+            <FragCard frag={f} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const items = document.querySelectorAll<HTMLElement>('.grid-item');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const filter = chip.dataset.filter;
+      chips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      items.forEach((item) => {
+        const show = filter === 'all' || item.dataset.type === filter;
+        item.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  .lede {
+    font-size: 1.05rem;
+    color: var(--color-bone-dim);
+    margin-bottom: var(--space-8);
+    max-width: 60ch;
+  }
+
+  .callout {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-yellow);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+    margin-bottom: var(--space-12);
+    color: var(--color-bone-dim);
+    font-size: 0.95rem;
+  }
+
+  .callout strong {
+    color: var(--color-yellow);
+    margin-right: var(--space-2);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+  }
+
+  .chip {
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-bone-dim);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .chip:hover { color: var(--color-bone); border-color: var(--color-bone-dim); }
+
+  .chip.active {
+    background: var(--color-coral);
+    border-color: var(--color-coral);
+    color: var(--color-bg);
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      gap: var(--space-6);
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>

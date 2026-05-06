@@ -1,6 +1,9 @@
 ---
 const path = Astro.url.pathname;
-const isActive = (p: string) => path === p || (p !== '/' && path.startsWith(p));
+const isActive = (p: string) => {
+  if (p === '/') return path === '/';
+  return path === p || path.startsWith(`${p}/`);
+};
 ---
 
 <header class="header">
@@ -11,7 +14,8 @@ const isActive = (p: string) => path === p || (p !== '/' && path.startsWith(p));
     </a>
     <nav aria-label="Primary">
       <a href="/" class:list={[isActive('/') && 'active']}>Home</a>
-      <a href="/drops" class:list={[isActive('/drops') && 'active']}>Drops</a>
+      <a href="/frags" class:list={[isActive('/frags') && 'active']}>Frags</a>
+      <a href="/shop" class:list={[isActive('/shop') && 'active']}>Shop</a>
       <a href="/about" class:list={[isActive('/about') && 'active']}>About</a>
       <a href="/contact" class:list={[isActive('/contact') && 'active']}>Contact</a>
     </nav>
@@ -54,9 +58,7 @@ const isActive = (p: string) => path === p || (p !== '/' && path.startsWith(p));
     text-transform: uppercase;
   }
 
-  .brand:hover {
-    color: var(--color-bone);
-  }
+  .brand:hover { color: var(--color-bone); }
 
   .brand img {
     width: 36px;
@@ -65,36 +67,36 @@ const isActive = (p: string) => path === p || (p !== '/' && path.startsWith(p));
     border: 1px solid var(--color-border);
   }
 
-  .brand-name {
-    line-height: 1;
-  }
+  .brand-name { line-height: 1; }
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     .brand-name { display: none; }
   }
 
   nav {
     display: flex;
-    gap: var(--space-2);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-1);
   }
 
-  @media (min-width: 480px) {
-    nav { gap: var(--space-4); }
-  }
+  @media (min-width: 480px) { nav { gap: var(--space-3); } }
+  @media (min-width: 720px) { nav { gap: var(--space-4); } }
 
   nav a {
     color: var(--color-bone-dim);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     letter-spacing: 0.02em;
-    padding: var(--space-2) var(--space-2);
+    padding: var(--space-2) var(--space-1);
     border-bottom: 2px solid transparent;
     transition: color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
   }
 
-  nav a:hover {
-    color: var(--color-bone);
-  }
+  @media (min-width: 480px) { nav a { font-size: 0.9rem; padding: var(--space-2); } }
+
+  nav a:hover { color: var(--color-bone); }
 
   nav a.active {
     color: var(--color-bone);

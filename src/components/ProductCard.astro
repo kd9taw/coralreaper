@@ -1,0 +1,124 @@
+---
+import type { EtsyProduct } from '../data/etsy';
+
+interface Props {
+  product: EtsyProduct;
+}
+
+const { product } = Astro.props;
+---
+
+<a class="card" href={product.etsyUrl} target="_blank" rel="noopener noreferrer">
+  <div class="image-wrap">
+    <img
+      src={product.image}
+      alt={product.title}
+      loading="lazy"
+      decoding="async"
+      onerror="this.src='/logo.png'; this.classList.add('fallback');"
+    />
+    {product.tag && <span class="tag">{product.tag}</span>}
+  </div>
+  <div class="meta">
+    <h3>{product.title}</h3>
+    <div class="row">
+      <span class="price">${product.price.toFixed(2)}</span>
+      <span class="cta">View on Etsy →</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    color: var(--color-bone);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-cyan);
+    color: var(--color-bone);
+  }
+
+  .image-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  img.fallback {
+    object-fit: contain;
+    padding: 24%;
+    opacity: 0.4;
+  }
+
+  .card:hover img:not(.fallback) {
+    transform: scale(1.04);
+  }
+
+  .tag {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    padding: 2px var(--space-2);
+    background: var(--color-yellow);
+    color: var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .meta {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    margin: 0;
+    flex: 1;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .price {
+    color: var(--color-bone);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .cta {
+    color: var(--color-cyan);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+</style>

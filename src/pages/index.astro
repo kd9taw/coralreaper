@@ -1,36 +1,109 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import DropTeaser from '../components/DropTeaser.astro';
+import FragCard from '../components/FragCard.astro';
+import ProductCard from '../components/ProductCard.astro';
+import ReviewBlock from '../components/ReviewBlock.astro';
+import { frags } from '../data/frags';
+import { products, reviews, ETSY_SHOP_URL, FACEBOOK_URL } from '../data/etsy';
+
+const featuredFrags = frags.filter((f) => f.status === 'available').slice(0, 4);
+const featuredProducts = products.slice(0, 4);
 ---
 
 <BaseLayout
-  title="Coral Reaper — Premium Aquacultured Corals"
-  description="Hand-selected, tank-raised corals shipped overnight. Limited weekly drops. Join the list for first access."
+  title="Coral Reaper — Frags + Custom 3D-Printed Reef Gear"
+  description="Aquacultured coral frags (local pickup) and custom 3D-printed reef accessories (ships via Etsy). Made by hand."
 >
   <Hero />
+
+  <section class="section featured-frags">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Frags · local pickup</p>
+          <h2>Currently growing.</h2>
+        </div>
+        <a class="see-all" href="/frags">See all {frags.length} →</a>
+      </div>
+      <div class="grid frag-grid">
+        {featuredFrags.map((f) => <FragCard frag={f} />)}
+      </div>
+    </div>
+  </section>
+
   <hr class="divider" />
-  <DropTeaser />
+
+  <section class="section channels">
+    <div class="container">
+      <p class="eyebrow">How to buy</p>
+      <h2>Two product lines. Two paths.</h2>
+      <div class="split">
+        <article class="lane lane-coral">
+          <span class="badge">Live coral</span>
+          <h3>Frags · local pickup</h3>
+          <p>
+            Aquacultured frags grown in our system. We're not set up to ship
+            live coral overnight yet, so frags are local pickup only. Find
+            something on the frag page, message us, we'll coordinate.
+          </p>
+          <a class="btn" href="/frags">Browse frags</a>
+        </article>
+        <article class="lane lane-cyan">
+          <span class="badge">Reef gear</span>
+          <h3>3D-printed accessories · ships via Etsy</h3>
+          <p>
+            Frag racks, photo boxes, light shades. Designed and printed in our
+            workshop, listed on Etsy with overnight processing. 5★ from every
+            buyer so far.
+          </p>
+          <a class="btn btn-ghost" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
+            Shop on Etsy ↗
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section featured-products">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Etsy · 3D-printed gear</p>
+          <h2>From the workshop.</h2>
+        </div>
+        <a class="see-all" href="/shop">See the shop →</a>
+      </div>
+      <div class="grid product-grid">
+        {featuredProducts.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <ReviewBlock reviews={reviews} />
 
   <section class="section how">
     <div class="container">
-      <p class="eyebrow">How it works</p>
-      <h2>Simple, in three.</h2>
+      <p class="eyebrow">For frag inquiries</p>
+      <h2>Three ways to reach us.</h2>
       <ol class="steps">
         <li>
           <span class="num">01</span>
-          <h3>Join the list</h3>
-          <p>You'll know about every drop, restock, and named release before it goes live.</p>
+          <h3>Contact form</h3>
+          <p>Tell us which frag, your pickup window, and any notes. Fastest for tracked replies.</p>
+          <a class="btn-ghost-link" href="/contact">Open contact form →</a>
         </li>
         <li>
           <span class="num">02</span>
-          <h3>Pick your frag</h3>
-          <p>Every piece photographed under actinic lighting on black. What you see is the exact frag that ships.</p>
+          <h3>Facebook DM</h3>
+          <p>Already on FB? Message the page and we'll reply there. Photos welcome.</p>
+          <a class="btn-ghost-link" href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Open Messenger ↗</a>
         </li>
         <li>
           <span class="num">03</span>
-          <h3>Overnight to your door</h3>
-          <p>Heat or cold pack as needed. Live arrival guarantee. No cut corners on packaging.</p>
+          <h3>Email</h3>
+          <p>Old-school works too. Goes to the same inbox.</p>
+          <a class="btn-ghost-link" href="mailto:contact@coralreaper.com">contact@coralreaper.com</a>
         </li>
       </ol>
     </div>
@@ -38,12 +111,84 @@ import DropTeaser from '../components/DropTeaser.astro';
 </BaseLayout>
 
 <style>
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .see-all {
+    color: var(--color-coral);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 720px) {
+    .grid { gap: var(--space-6); grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .split {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+    margin-top: var(--space-8);
+  }
+
+  @media (min-width: 800px) {
+    .split { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+  }
+
+  .lane {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .lane-coral { border-top: 3px solid var(--color-coral); }
+  .lane-cyan { border-top: 3px solid var(--color-cyan); }
+
+  .badge {
+    display: inline-block;
+    width: fit-content;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 2px var(--space-3);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-bone);
+  }
+
+  .lane-coral .badge { color: var(--color-coral); }
+  .lane-cyan .badge { color: var(--color-cyan); }
+
+  .lane h3 { margin-top: var(--space-2); }
+  .lane p { color: var(--color-bone-dim); flex: 1; }
+  .lane .btn,
+  .lane .btn-ghost { align-self: flex-start; margin-top: var(--space-2); }
+
   .steps {
     list-style: none;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-8);
-    margin-top: var(--space-12);
+    margin-top: var(--space-8);
   }
 
   @media (min-width: 720px) {
@@ -60,7 +205,12 @@ import DropTeaser from '../components/DropTeaser.astro';
     line-height: 1;
   }
 
-  .steps h3 {
-    margin-bottom: var(--space-2);
+  .steps h3 { margin-bottom: var(--space-2); }
+  .steps p { margin-bottom: var(--space-3); }
+
+  .btn-ghost-link {
+    color: var(--color-cyan);
+    font-weight: 600;
+    font-size: 0.9rem;
   }
 </style>

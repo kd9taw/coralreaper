@@ -1,25 +1,50 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { FACEBOOK_URL } from '../data/etsy';
 
 // Replace with a real Formspree form ID before going live (see README).
+// Until activated, the form will visibly fail; the Facebook + email links
+// below provide a working fallback.
 const FORMSPREE_ID = 'YOUR_FORM_ID';
 const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
+const CONTACT_EMAIL = 'contact@coralreaper.com';
+
+// Honor ?topic=frag&frag=NAME query so a frag detail page can pre-fill.
+const topicParam = Astro.url.searchParams.get('topic') ?? '';
+const fragParam = Astro.url.searchParams.get('frag') ?? '';
+const presetTopic = topicParam === 'frag' ? 'frag' : '';
+const presetMessage = fragParam ? `Interested in: ${fragParam}\n\nPickup window: \nNotes: ` : '';
 ---
 
 <BaseLayout
   title="Contact — Coral Reaper"
-  description="Reach out about wholesale, partnerships, or general questions."
+  description="Frag inquiries, wholesale, partnerships — get in touch via form, Facebook DM, or email."
 >
   <section class="section">
     <div class="container narrow">
       <p class="eyebrow">Contact</p>
       <h1>Say hi.</h1>
       <p class="lede">
-        Wholesale, partnerships, sponsorships, press, or general questions —
-        all welcome. We'll get back to you within a couple of days.
+        Frag inquiries (local pickup), wholesale, partnerships, custom 3D-print
+        requests, press — all welcome. We aim to reply within a couple of days.
       </p>
 
-      <form class="form" action={formAction} method="post">
+      <div class="quick">
+        <div>
+          <h4>Fastest</h4>
+          <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Facebook DM ↗</a>
+        </div>
+        <div>
+          <h4>Email</h4>
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </div>
+        <div>
+          <h4>Or use the form</h4>
+          <a href="#contact-form">Below ↓</a>
+        </div>
+      </div>
+
+      <form class="form" id="contact-form" action={formAction} method="post">
         <div class="row">
           <label>
             <span>Name</span>
@@ -34,8 +59,9 @@ const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
         <label>
           <span>Topic</span>
           <select name="topic" required>
-            <option value="general">General question</option>
+            <option value="frag" selected={presetTopic === 'frag'}>Frag inquiry — local pickup</option>
             <option value="wholesale">Wholesale</option>
+            <option value="custom-print">Custom 3D-print request</option>
             <option value="partnership">Partnership / sponsorship</option>
             <option value="press">Press / media</option>
             <option value="other">Other</option>
@@ -44,19 +70,28 @@ const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
 
         <label>
           <span>Message</span>
-          <textarea name="message" rows="6" required></textarea>
+          <textarea
+            name="message"
+            rows="7"
+            required
+            placeholder="Which frag(s) or item? Pickup window? Anything else we should know?"
+          >{presetMessage}</textarea>
         </label>
 
         <button type="submit" class="btn">Send</button>
       </form>
+
+      <p class="form-note">
+        Form not working? It's on the dev list to wire up next. In the
+        meantime <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">message us on Facebook ↗</a>
+        or <a href={`mailto:${CONTACT_EMAIL}`}>email {CONTACT_EMAIL}</a>.
+      </p>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .narrow {
-    max-width: 720px;
-  }
+  .narrow { max-width: 720px; }
 
   .lede {
     font-size: 1.05rem;
@@ -65,6 +100,38 @@ const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
     margin-bottom: var(--space-12);
     max-width: 56ch;
   }
+
+  .quick {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+
+  @media (min-width: 640px) {
+    .quick { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .quick h4 {
+    color: var(--color-coral);
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-2);
+  }
+
+  .quick a {
+    color: var(--color-bone);
+    font-weight: 600;
+  }
+
+  .quick a:hover { color: var(--color-coral); }
 
   .form {
     display: flex;
@@ -111,7 +178,12 @@ const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
 
   textarea {
     resize: vertical;
-    min-height: 140px;
+    min-height: 160px;
+    line-height: 1.5;
+  }
+
+  textarea::placeholder {
+    color: var(--color-bone-faint);
   }
 
   input:focus,
@@ -121,7 +193,11 @@ const formAction = `https://formspree.io/f/${FORMSPREE_ID}`;
     outline: none;
   }
 
-  button {
-    align-self: flex-start;
+  button { align-self: flex-start; }
+
+  .form-note {
+    margin-top: var(--space-8);
+    color: var(--color-bone-faint);
+    font-size: 0.85rem;
   }
 </style>

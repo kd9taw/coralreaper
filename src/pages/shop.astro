@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import ReviewBlock from '../components/ReviewBlock.astro';
+import { products, reviews, ETSY_SHOP_URL } from '../data/etsy';
+---
+
+<BaseLayout
+  title="Shop — Custom 3D-Printed Reef Gear — Coral Reaper"
+  description="Custom 3D-printed reef accessories: frag racks, photo boxes, light shades. Designed and printed by us, ships nationwide via Etsy."
+>
+  <section class="section shop-intro">
+    <div class="container">
+      <p class="eyebrow">Shop · 3D-printed gear</p>
+      <h1>Made by us. Ships from Etsy.</h1>
+      <p class="lede">
+        Every accessory on this page started as a gap in our own setup. We design,
+        print, and use them ourselves — then list them on Etsy so other reefers can too.
+      </p>
+      <a class="btn" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
+        View shop on Etsy ↗
+      </a>
+    </div>
+  </section>
+
+  <section class="section products">
+    <div class="container">
+      <div class="grid">
+        {products.map((p) => <ProductCard product={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <ReviewBlock reviews={reviews} />
+
+  <section class="section why">
+    <div class="container narrow">
+      <p class="eyebrow">Why we make our own gear</p>
+      <h2>The frag rack came first.</h2>
+      <p>
+        We started Coral Reaper to grow corals. The 3D printer was for tank
+        accessories nobody else made — frag racks sized for our system,
+        photo boxes that fit them, light shades that block spill. When friends
+        asked where we got them, we listed a few on Etsy.
+      </p>
+      <p>
+        Now the gear funds the corals. Both lines stay small, both stay made
+        by hand, both ship from the same workshop. If you're after a custom
+        design, the contact form is the fastest way.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shop-intro {
+    padding-bottom: var(--space-12);
+  }
+
+  .lede {
+    font-size: 1.1rem;
+    color: var(--color-bone-dim);
+    margin: var(--space-6) 0 var(--space-8);
+    max-width: 60ch;
+  }
+
+  .products { padding-top: 0; }
+
+  .grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 540px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .narrow { max-width: 720px; }
+
+  .why h2 { margin-bottom: var(--space-6); }
+  .why p {
+    color: var(--color-bone-dim);
+    font-size: 1.05rem;
+    margin-bottom: var(--space-4);
+  }
+</style>

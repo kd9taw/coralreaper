@@ -1,21 +1,32 @@
 ---
-import EmailSignup from './EmailSignup.astro';
+import { ETSY_SHOP_URL } from '../data/etsy';
+import { frags } from '../data/frags';
+
+// Pick the first available frag photo as hero backdrop
+const heroFrag = frags.find((f) => f.status === 'available') ?? frags[0];
 ---
 
 <section class="hero">
-  <div class="bloom" aria-hidden="true"></div>
+  <div class="bg" aria-hidden="true">
+    <img src={heroFrag.image} alt="" />
+    <div class="bg-overlay"></div>
+  </div>
+
   <div class="container hero-inner">
     <div class="logo-wrap">
-      <img src="/logo.png" alt="Coral Reaper logo" width="220" height="220" />
+      <img src="/logo.png" alt="Coral Reaper logo" width="160" height="160" />
     </div>
-    <p class="eyebrow">Premium aquacultured corals</p>
-    <h1>The frags worth keeping.</h1>
+    <p class="eyebrow">Frags + custom 3D-printed reef gear</p>
+    <h1>Frags I grow.<br /><span class="accent">Gear I print.</span></h1>
     <p class="lede">
-      Hand-selected, tank-raised corals shipped overnight.
-      Limited drops, named pieces, and a list that hears about them first.
+      Hand-grown coral frags (local pickup) and custom 3D-printed reef
+      accessories (ships nationwide via Etsy). All from one workshop.
     </p>
-    <div class="signup-wrap">
-      <EmailSignup variant="hero" heading="Get on the list" description="Be first to know when the doors open." />
+    <div class="ctas">
+      <a class="btn" href="/frags">Browse frags →</a>
+      <a class="btn btn-ghost" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
+        Shop accessories on Etsy ↗
+      </a>
     </div>
   </div>
 </section>
@@ -27,23 +38,35 @@ import EmailSignup from './EmailSignup.astro';
     overflow: hidden;
     text-align: center;
     isolation: isolate;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
   }
 
   @media (min-width: 768px) {
     .hero { padding: var(--space-24) 0; }
   }
 
-  .bloom {
+  .bg {
     position: absolute;
-    inset: -10% -10% auto -10%;
-    height: 70%;
-    background:
-      radial-gradient(circle at 30% 30%, rgba(255, 59, 108, 0.18), transparent 55%),
-      radial-gradient(circle at 75% 40%, rgba(34, 211, 238, 0.14), transparent 50%),
-      radial-gradient(circle at 50% 80%, rgba(255, 214, 10, 0.08), transparent 60%);
-    filter: blur(20px);
+    inset: 0;
     z-index: -1;
-    pointer-events: none;
+  }
+
+  .bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(6px) saturate(1.1) brightness(0.55);
+    transform: scale(1.06);
+  }
+
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(10, 10, 10, 0.35), rgba(10, 10, 10, 0.92) 70%),
+      linear-gradient(180deg, rgba(10, 10, 10, 0.6) 0%, rgba(10, 10, 10, 0.95) 100%);
   }
 
   .hero-inner {
@@ -51,40 +74,45 @@ import EmailSignup from './EmailSignup.astro';
     flex-direction: column;
     align-items: center;
     gap: var(--space-4);
-  }
-
-  .logo-wrap {
-    margin-bottom: var(--space-2);
+    width: 100%;
   }
 
   .logo-wrap img {
-    width: 180px;
-    height: 180px;
+    width: 132px;
+    height: 132px;
     border-radius: 50%;
     border: 1px solid var(--color-border);
     box-shadow:
-      0 0 60px rgba(255, 59, 108, 0.15),
-      0 0 120px rgba(34, 211, 238, 0.08);
+      0 0 60px rgba(255, 59, 108, 0.18),
+      0 0 120px rgba(34, 211, 238, 0.10);
   }
 
   @media (min-width: 768px) {
-    .logo-wrap img { width: 220px; height: 220px; }
+    .logo-wrap img { width: 160px; height: 160px; }
   }
 
   h1 {
     max-width: 18ch;
   }
 
+  .accent { color: var(--color-coral); }
+
   .lede {
     color: var(--color-bone-dim);
     font-size: 1.1rem;
-    max-width: 52ch;
+    max-width: 56ch;
     margin: 0 auto;
   }
 
-  .signup-wrap {
-    width: 100%;
-    max-width: 540px;
+  .ctas {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
     margin-top: var(--space-6);
+    align-items: center;
+  }
+
+  @media (min-width: 540px) {
+    .ctas { flex-direction: row; }
   }
 </style>

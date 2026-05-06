@@ -1,68 +1,81 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import EmailSignup from '../components/EmailSignup.astro';
+import { ETSY_SHOP_URL, FACEBOOK_URL } from '../data/etsy';
 ---
 
 <BaseLayout
   title="About — Coral Reaper"
-  description="Coral Reaper is a small, US-based aquaculture operation focused on hand-selected frags, honest photography, and overnight shipping."
+  description="A small, US-based reef-keeping operation. We grow coral frags and 3D-print the gear we use to keep them — both lines made by hand, both made by us."
 >
   <section class="section">
     <div class="container narrow">
       <p class="eyebrow">About</p>
-      <h1>Small operation. Tight catalog. No filler.</h1>
+      <h1>Small. Hand-made. Both halves.</h1>
 
       <div class="prose">
         <p>
-          Coral Reaper is a small, US-based aquaculture project. We grow, frag,
-          and ship corals we'd be proud to keep in our own systems — nothing
-          more, nothing less.
+          Coral Reaper is a small, US-based reef-keeping operation built
+          around two things we make ourselves: aquacultured coral frags
+          and 3D-printed reef accessories.
         </p>
 
-        <h2>What we believe</h2>
+        <h2>What we sell today</h2>
+        <ul>
+          <li>
+            <strong>Coral frags</strong> — aquacultured pieces grown in our
+            own system, photographed in our own racks. <strong>Local pickup
+            only</strong> right now. We're not set up to ship live coral
+            overnight yet, but we will be. <a href="/frags">See current inventory →</a>
+          </li>
+          <li>
+            <strong>3D-printed reef gear</strong> — frag racks, photo boxes,
+            light shades, tray accessories. Designed for our own setup first;
+            listed on Etsy when they're ready for other reefers.
+            <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">Shop on Etsy ↗</a>
+          </li>
+        </ul>
+
+        <h2>Why we make our own gear</h2>
         <p>
-          Aquacultured corals are stronger, hardier, and easier to settle into
-          a new system than wild collected pieces. They've already adapted to
-          captive water, captive lighting, and captive flow. We focus on
-          tank-raised stock for that reason — it's better for hobbyists and
-          better for reefs.
+          We started with corals. The 3D printer was for accessories nobody
+          else made — frag racks sized for our system, photo boxes that fit
+          them, light shades that block spill. When tank friends asked where
+          we got them, we listed a few. Now the gear funds the corals.
+        </p>
+        <p>
+          The two product lines stay connected on purpose. Every frag photo
+          on this site was shot in a rack we designed. The gear isn't a
+          side hustle — it's part of the same workshop.
         </p>
 
         <h2>How we ship</h2>
-        <p>
-          What you see is what ships. Every frag is photographed under
-          actinic-only lighting on a black background — no edited stock photos,
-          no bait-and-switch substitutions. Frags ship overnight with a heat
-          or cold pack as the route requires, and a live arrival guarantee.
-          Cut corners on packaging is how corals die in transit; we don't.
-        </p>
+        <ul>
+          <li>
+            <strong>Frags</strong> — local pickup only. Coordinate via the
+            <a href="/contact">contact form</a> or
+            <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Facebook</a>.
+            Overnight shipping for live coral is on the roadmap, not the menu yet.
+          </li>
+          <li>
+            <strong>Gear</strong> — ships nationwide through our Etsy shop.
+            Standard processing, tracking, the usual. 5★ from every buyer
+            so far.
+          </li>
+        </ul>
 
-        <h2>Why "Reaper"</h2>
+        <h2>What's next</h2>
         <p>
-          The name's a wink. The corals you'll find here are the survivors —
-          tank-raised, dialed-in, and ready to spread. The reaper is the one
-          who picks the keepers.
+          See the <a href="/drops">roadmap</a>. Short version: more frag
+          inventory, more gear designs, eventually shipped frags overnight,
+          eventually live drops. We're building deliberately, one piece at a time.
         </p>
-
-        <h2>Where we are in the launch</h2>
-        <p>
-          The list is open now. Storefront and first drop are coming soon.
-          Wholesale and partnership inquiries are welcome — see the
-          <a href="/contact">contact page</a>.
-        </p>
-      </div>
-
-      <div class="signup-spacer">
-        <EmailSignup />
       </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .narrow {
-    max-width: 760px;
-  }
+  .narrow { max-width: 760px; }
 
   .prose {
     margin-top: var(--space-8);
@@ -74,6 +87,7 @@ import EmailSignup from '../components/EmailSignup.astro';
   .prose h2 {
     margin-top: var(--space-4);
     color: var(--color-bone);
+    font-size: 1.5rem;
   }
 
   .prose p {
@@ -82,7 +96,19 @@ import EmailSignup from '../components/EmailSignup.astro';
     max-width: 65ch;
   }
 
-  .signup-spacer {
-    margin-top: var(--space-16);
+  .prose ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
   }
+
+  .prose ul li {
+    color: var(--color-bone-dim);
+    font-size: 1.05rem;
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .prose strong { color: var(--color-bone); }
 </style>
